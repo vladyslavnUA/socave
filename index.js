@@ -7,6 +7,21 @@ app.get('/', function(req,res) {
     res.render('index.ejs');
 });
 
+io.sockets.on('connection', function(socket) {
+    socket.on('username', function(username) {
+        socket.username = username;
+        io.emit('is_online', '🙂 <i>' + socket.username + ' has joined the chat</i>');
+    });
+
+    socket.on('disconnect', function(username) {
+        io.emit('is_online', '😔 <i>' + socket.username + ' has left the chat</i>');
+    });
+
+    socket.on('disconnect', function(username) {
+        io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
+    });
+});
+
 app.listen(3000, () => {
     console.log('listing on port -- 3000 --');
 })
